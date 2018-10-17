@@ -78,7 +78,6 @@ void dump(const u_char* p, int len) {
 }
 
 void get_mac_address(pcap_t *handle, struct pcap_pkthdr *header, uint8_t *packet_s, const uint8_t *packet_r, struct arp_structure *arp, struct in_addr ip_address ,uint8_t mac_address[], struct session *ses ) {
-  
   if(pcap_sendpacket(handle, packet_s, sizeof(struct arp_structure)) != 0)
     {printf("(ses[%d]) ",ses->num); perror("pcap_sendpacket"); exit(EXIT_FAILURE);}
 // receive ARP reply
@@ -197,7 +196,7 @@ void* spoofing(void* arg) {
         memcpy(eth->ether_dhost , target_mac, ETHER_ADDR_LEN);
         
         if(pcap_sendpacket(handle, packet_r, header->len) != 0) 
-          {printf("(ses[%d]) ",ses->num); perror("pcap_sendpacket"); exit(EXIT_FAILURE);}
+          {printf("(ses[%d]) ",ses->num); perror("pcap_sendpacket"); continue;}
       }
 //arp_recovery
       else if(ntohs(eth->ether_type) == ETHERTYPE_ARP && ntohs(arp->arp_hdr.ar_op) == ARPOP_REQUEST) send_fake_packet(handle,packet_s,ses);    
